@@ -1,0 +1,384 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Complete Repository Analysis</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            }
+
+            body {
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                min-height: 100vh;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: 2rem auto;
+                padding: 0 1rem;
+            }
+
+            .main-header {
+                background: var(--primary-gradient);
+                color: white;
+                border-radius: 20px;
+                padding: 2rem;
+                margin-bottom: 2rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .stat-card {
+                background: white;
+                border-radius: 15px;
+                padding: 2rem;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            }
+
+            .stat-value {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #667eea;
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-label {
+                color: #666;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+
+            .content-section {
+                background: white;
+                border-radius: 20px;
+                padding: 2rem;
+                margin-bottom: 2rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .section-header {
+                color: #333;
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 3px solid #667eea;
+            }
+
+            .chart-container {
+                position: relative;
+                height: 300px;
+                margin: 1rem 0;
+            }
+
+            .contributor-card {
+                display: flex;
+                align-items: center;
+                padding: 1rem;
+                background: #f8f9fa;
+                border-radius: 10px;
+                margin-bottom: 1rem;
+            }
+
+            .contributor-avatar {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-right: 1rem;
+            }
+
+            .contributor-info {
+                flex-grow: 1;
+            }
+
+            .contributor-name {
+                font-weight: 600;
+                color: #333;
+            }
+
+            .contributor-contributions {
+                color: #666;
+                font-size: 0.9rem;
+            }
+
+            .badge-custom {
+                background: var(--primary-gradient);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                font-weight: 500;
+                margin: 0.25rem;
+                display: inline-block;
+            }
+
+            .btn-back {
+                background: var(--primary-gradient);
+                color: white;
+                border: none;
+                padding: 1rem 2rem;
+                border-radius: 50px;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: all 0.3s ease;
+            }
+
+            .btn-back:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                color: white;
+            }
+
+            @media (max-width: 768px) {
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .stat-card {
+                    padding: 1.5rem;
+                }
+                
+                .stat-value {
+                    font-size: 2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Main Header -->
+            <div class="main-header">
+                <h1><i class="bi bi-github"></i> Complete Repository Analysis</h1>
+                <p>Detailed insights and metrics for {{ result.name }}</p>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{ result.stars }}</div>
+                    <div class="stat-label"><i class="bi bi-star-fill"></i> Stars</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ result.forks }}</div>
+                    <div class="stat-label"><i class="bi bi-bezier2"></i> Forks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ result.watchers }}</div>
+                    <div class="stat-label"><i class="bi bi-eye-fill"></i> Watchers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ result.metrics.active_contributors }}</div>
+                    <div class="stat-label"><i class="bi bi-people-fill"></i> Active Contributors</div>
+                </div>
+            </div>
+
+            <!-- Repository Overview -->
+            <div class="content-section">
+                <h2 class="section-header"><i class="bi bi-info-circle"></i> Repository Overview</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Description:</strong> {{ result.description }}</p>
+                        <p><strong>Primary Language:</strong> {{ result.language }}</p>
+                        <p><strong>Clone URL:</strong> <code>{{ result.clone_url }}</code></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Average Contributions:</strong> {{ result.metrics.avg_contributions }}</p>
+                        <p><strong>Open Issues:</strong> {{ result.metrics.open_issues }}</p>
+                        <p><strong>Issue Response Time:</strong> {{ result.metrics.issue_response_time }} days</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Analysis -->
+            <div class="content-section">
+                <h2 class="section-header"><i class="bi bi-code-square"></i> Code Analysis</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Languages Used</h3>
+                        <div class="chart-container">
+                            <canvas id="languagesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Code Quality Metrics</h3>
+                        <div class="chart-container">
+                            <canvas id="qualityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contributors -->
+            <div class="content-section">
+                <h2 class="section-header"><i class="bi bi-people"></i> Top Contributors</h2>
+                <div class="row">
+                    {% for contributor in result.contributors[:5] %}
+                    <div class="col-md-6">
+                        <div class="contributor-card">
+                            <img src="https://github.com/{{ contributor.username }}.png" alt="{{ contributor.username }}" class="contributor-avatar">
+                            <div class="contributor-info">
+                                <div class="contributor-name">{{ contributor.username }}</div>
+                                <div class="contributor-contributions">{{ contributor.contributions }} contributions</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Commit Activity -->
+            <div class="content-section">
+                <h2 class="section-header"><i class="bi bi-graph-up"></i> Commit Activity</h2>
+                <div class="chart-container">
+                    <canvas id="commitChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Issues Analysis -->
+            <div class="content-section">
+                <h2 class="section-header"><i class="bi bi-exclamation-circle"></i> Issues Analysis</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Issue Trends</h3>
+                        <p><strong>Current Trend:</strong> {{ result.issues.trend }}</p>
+                        <h4>Priority Areas:</h4>
+                        <div>
+                            {% for priority in result.issues.priorities %}
+                            <span class="badge-custom">{{ priority }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Recent Issues</h3>
+                        <div class="list-group">
+                            {% for issue in result.issues.issues[:5] %}
+                            <div class="list-group-item">
+                                <h5>{{ issue.title }}</h5>
+                                <p class="mb-1">State: {{ issue.state }}</p>
+                                <small>Created: {{ issue.created_at }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a href="/" class="btn-back">
+                    <i class="bi bi-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Initialize charts when the page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get data from template variables
+                const languagesData = JSON.parse('{{ result.code_analysis.languages|tojson|safe }}');
+                const weeksData = JSON.parse('{{ result.weeks|tojson|safe }}');
+                const commitData = JSON.parse('{{ result.commit_activity|tojson|safe }}');
+
+                // Languages Chart
+                const languagesCtx = document.getElementById('languagesChart').getContext('2d');
+                new Chart(languagesCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(languagesData),
+                        datasets: [{
+                            data: Object.values(languagesData),
+                            backgroundColor: [
+                                '#667eea',
+                                '#764ba2',
+                                '#4facfe',
+                                '#00f2fe',
+                                '#f093fb',
+                                '#f5576c'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+
+                // Commit Activity Chart
+                const commitCtx = document.getElementById('commitChart').getContext('2d');
+                new Chart(commitCtx, {
+                    type: 'line',
+                    data: {
+                        labels: weeksData,
+                        datasets: [{
+                            label: 'Commits',
+                            data: commitData,
+                            borderColor: '#667eea',
+                            tension: 0.4,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Quality Metrics Chart
+                const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+                new Chart(qualityCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Code Structure', 'Documentation', 'Testing', 'Performance', 'Security'],
+                        datasets: [{
+                            label: 'Quality Score',
+                            data: [4, 3, 3, 4, 3],
+                            backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                            borderColor: '#667eea',
+                            pointBackgroundColor: '#667eea'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 5
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>
